@@ -8123,10 +8123,9 @@ BrowserDictionaryLoader.prototype.loadArrayBuffer = function (url, callback) {
             return;
         }
         var arraybuffer = this.response;
-        var contentEncoding = xhr.getResponseHeader("Content-Encoding");
         // https://github.com/hexenq/kuroshiro/issues/27
         // maybe auto decompress .gz in response
-        if (contentEncoding == "gzip") {
+        if (xhr.getAllResponseHeaders().toLowerCase().indexOf("content-encoding") >= 0 && xhr.getResponseHeader("Content-Encoding") == "gzip") {
             callback(null, arraybuffer);
         }
         else {
@@ -8197,11 +8196,18 @@ DictionaryLoader.prototype.load = function (load_callback) {
     var dic_path = this.dic_path;
     var loadArrayBuffer = this.loadArrayBuffer;
 
+    // check url
+    var pattern = /^(https?|ftp)(:\/\/[\w\/:%#\$&\?\(\)~\.=\+\-]+)/
+    var isUrl = pattern.test(dic_path)
+    function join(filename) {
+        return isUrl ? new URL(filename, dic_path).href : path.join(dic_path, filename);
+    }
+
     async.parallel([
         // Trie
         function (callback) {
             async.map([ "base.dat.gz", "check.dat.gz" ], function (filename, _callback) {
-                loadArrayBuffer(path.join(dic_path, filename), function (err, buffer) {
+                loadArrayBuffer(join(filename), function (err, buffer) {
                     if(err) {
                         return _callback(err);
                     }
@@ -8221,7 +8227,7 @@ DictionaryLoader.prototype.load = function (load_callback) {
         // Token info dictionaries
         function (callback) {
             async.map([ "tid.dat.gz", "tid_pos.dat.gz", "tid_map.dat.gz" ], function (filename, _callback) {
-                loadArrayBuffer(path.join(dic_path, filename), function (err, buffer) {
+                loadArrayBuffer(join(filename), function (err, buffer) {
                     if(err) {
                         return _callback(err);
                     }
@@ -8241,7 +8247,7 @@ DictionaryLoader.prototype.load = function (load_callback) {
         },
         // Connection cost matrix
         function (callback) {
-            loadArrayBuffer(path.join(dic_path, "cc.dat.gz"), function (err, buffer) {
+            loadArrayBuffer(join("cc.dat.gz"), function (err, buffer) {
                 if(err) {
                     return callback(err);
                 }
@@ -8253,7 +8259,7 @@ DictionaryLoader.prototype.load = function (load_callback) {
         // Unknown dictionaries
         function (callback) {
             async.map([ "unk.dat.gz", "unk_pos.dat.gz", "unk_map.dat.gz", "unk_char.dat.gz", "unk_compat.dat.gz", "unk_invoke.dat.gz" ], function (filename, _callback) {
-                loadArrayBuffer(path.join(dic_path, filename), function (err, buffer) {
+                loadArrayBuffer(join(filename), function (err, buffer) {
                     if(err) {
                         return _callback(err);
                     }
