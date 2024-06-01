@@ -78,3 +78,11 @@ else
     callback(null, typed_array.buffer);
 }
 ```
+
+# unityroom での使用について
+
+unityroom で使う場合、おそらく kuromoji.js / *.gz などは外部サーバで置いてリクエストで読み込むので
+
+本家([kuromoji.js](https://github.com/takuyaa/kuromoji.js))からいくつかの修正を加えているため
+
+Assets\kuromoji\libs\ 階層内のファイルを使ってください
