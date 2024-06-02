@@ -4,7 +4,6 @@
 
 [demo for Unity WebGL](https://kou-yeung.github.io/kuromoji_webgl/index.html)
 
-
 # 初期化
 
 ```
@@ -86,3 +85,5 @@ unityroom で使う場合、おそらく kuromoji.js / *.gz などは外部サ�
 本家([kuromoji.js](https://github.com/takuyaa/kuromoji.js))からいくつかの修正を加えているため
 
 Assets\kuromoji\libs\ 階層内のファイルを使ってください
+
+[demo : unityroom](https://unityroom.com/games/kuromoji_webgl)
