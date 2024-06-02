@@ -17,6 +17,9 @@ namespace takuyaa.kuromoji
 
         [DllImport("__Internal")]
         public static extern void kuromojBuild(int id, string dict, string text, Action<int, string> cb);
+
+        [DllImport("__Internal")]
+        public static extern void kuromojiClearCache();
 #else
         public static void kuromojiLoadScript(string path) { }
 
@@ -40,6 +43,8 @@ namespace takuyaa.kuromoji
             };
             cb?.Invoke(id, JsonUtility.ToJson(new TokenizeArrayWrapper { tokenize = new[] { tokenize } }));
         }
+
+        public static void kuromojiClearCache() { }
 #endif
     }
 
@@ -119,6 +124,14 @@ namespace takuyaa.kuromoji
             var cb = callbacks[id];
             callbacks[id] = null;
             cb?.Invoke(JsonUtility.FromJson<TokenizeArrayWrapper>(result).tokenize);
+        }
+
+        /// <summary>
+        /// キャッシュした tokenizer クリアする
+        /// </summary>
+        public static void ClearCache()
+        {
+            Plugins.kuromojiClearCache();
         }
     }
 }
