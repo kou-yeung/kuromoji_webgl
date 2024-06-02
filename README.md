@@ -45,7 +45,7 @@ takuyaa.kuromoji.Kuromoji.Build("すもももももももものうち", res =>
 
 # kuromoji.js について
 
-公式の kuromoji.js は dict 読み込み時に例外をスローしました
+## 公式の kuromoji.js は dict 読み込み時に例外をスローしました
 
 原因：
 
@@ -79,6 +79,15 @@ else
     callback(null, typed_array.buffer);
 }
 ```
+## url 指定してどう手見読み込むとき、full url 指定すると読み込み失敗する
+
+相対パスを想定してる実装で path.join(...) を使用されています
+
+http:// のような // が / に直されたため、正しくアクセスできなかった
+
+解決方法：
+
+正規表現を使って渡されたパスが url かどうかで分岐して対処しました
 
 # unityroom での使用について
 
